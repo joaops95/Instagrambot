@@ -41,7 +41,7 @@ def readMyFile(filename):
 
 # -------------------------------login credentials------------------------------------
 insta_username = 'smartechpost'
-insta_password = ''
+insta_password = 'joaotiago'
 
 # ----------------------------------InstaPy session------------------------------------
 session = InstaPy(username=insta_username,
@@ -86,31 +86,22 @@ session.set_simulation(enabled=False)
 
 
 def likeByLocations():
-    myusers = readMyFile('Locations2.csv')
-    sizemyusers = len(myusers)
-    i = 0
-    print(myusers)
-    for i in range(random.randrange(1,5)):
-        temp[0] = myusers[random.randrange(0, sizemyusers)]
-        print(temp[0])
-        a = 0
-        while(a <= random.randrange(1, 10)):
-            tm = random.randrange(1, 4)
-            session.like_by_locations(
-                temp, amount=tm, skip_top_posts=True)
-            if(tm == 1):
-                a += 1
-                print("1 follow")
-            elif(tm == 2):
-                a += 2
-                print("2 follow")
-            elif(tm == 3):
-                a += 3
-            else:
-                a += 0
-                print("sleeping a bit")
-                time.sleep(random.randrange(
-                    min_time_of_likeorfollow, max_time_of_likeorfollow))
+    #get randomly up to 5 locations
+    locations = readMyFile('Locations2.csv')
+    random.shuffle(myusers)
+    locations = myusers[:random.randrange(1,5)]
+    print('Locations to validate: ' + str(locations))
+    for location in locations:
+        nlikes = random.randrange(1,10)
+        session.like_by_locations(location, amount=nlikes, skip_top_posts=True)
+        print(str(nlikes) + " follow")
+        if (nlikes == 0):
+            sleeptime = random.randrange(min_time_of_likeorfollow, max_time_of_likeorfollow)
+            print('Sleeping for' + str(sleeptime))
+            time.sleep(random.randrange(sleeptime))
+
+
+    
 # Function Like by Tags
 
 

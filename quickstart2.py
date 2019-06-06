@@ -85,20 +85,21 @@ session.set_simulation(enabled=False)
 # Read file function, allows to read any file csv
 
 
-def likeByLocations():
+def doActionBlueprint(filename, actionfn, args):
     #get randomly up to 5 locations
-    locations = readMyFile('Locations2.csv')
-    random.shuffle(myusers)
-    locations = myusers[:random.randrange(1,5)]
-    print('Locations to validate: ' + str(locations))
-    for location in locations:
-        nlikes = random.randrange(1,10)
-        session.like_by_locations(location, amount=nlikes, skip_top_posts=True)
-        print(str(nlikes) + " follow")
-        if (nlikes == 0):
-            sleeptime = random.randrange(min_time_of_likeorfollow, max_time_of_likeorfollow)
-            print('Sleeping for' + str(sleeptime))
-            time.sleep(random.randrange(sleeptime))
+        filedata = readMyFile(filename)
+        random.shuffle(filedata)
+        filedata = filedata[:random.randrange(1,5)]
+        for data_entry in filedata:
+            nactions = random.randrange(1,10)
+            actionfn([data_entry], **args)
+            if (nactions == 0):
+                sleeptime = random.randrange(min_time_of_likeorfollow, max_time_of_likeorfollow)
+                print('Sleeping for' + str(sleeptime))
+                time.sleep(random.randrange(sleeptime))
+
+def likeByLocations():
+    doActionBlueprint('Locations2.csv', session.like_by_locations,{'amount':random.randrange(1,10), 'skip_top_posts': True})
 
 
     
@@ -315,7 +316,7 @@ try:
                         time.sleep(random.randrange(2, 5))							
                         if(ct >= random.randrange(1, 4)):
                             session.unfollow_users(amount=random.randrange(10, 20), nonFollowers=True, style="RANDOM", unfollow_after=42*60*60,sleep_delay=random.randrange(100, 250))																				
-
+            likeByLocations()
             abc = random.randrange(1, 5)
             if abc == 1:
                 print("Welcome to func n 1")

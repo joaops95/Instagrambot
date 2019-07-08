@@ -14,11 +14,11 @@ from instapy import InstaPy
 from instapy.util import smart_run
 
 # ----------------------------------CONSTANTS------------------------------------
-likes_per_day = random.randrange(500, 900)
+likes_per_day = random.randrange(400, 900)
 likes_per_hour = random.randrange(40, 80)
-follows_per_day = random.randrange(500, 900)
+follows_per_day = random.randrange(400, 900)
 follows_per_hour = random.randrange(40, 80)
-unfollows_per_day = random.randrange(500, 900)
+unfollows_per_day = random.randrange(400, 900)
 unfollows_per_hour = random.randrange(40, 80)
 coments_per_day = None
 coments_per_hour = None
@@ -39,6 +39,18 @@ def readMyFile(filename):
             data.append(row[0])
     return data
 
+def appendCsv(data, csvfile):
+    with open(csvfile, 'rt') as readFile:
+        reader = csv.reader(readFile)
+        lines = list(reader)
+        for i in range(len(lines)):
+            if(lines[i] == data):
+                print('user ja existe na bd')
+                readFile.close()
+        else:
+            with open(csvfile, 'a') as userlist:
+                userlist.write('\n%s' % data)
+            userlist.close()
 # -------------------------------login credentials------------------------------------
 insta_username = 'smartechpost'
 insta_password = 'joaotiago'
@@ -64,7 +76,7 @@ my_followers, my_following = grc(session.browser, "joaops95", session.logger)
 session.set_relationship_bounds(enabled=True,
                                 potency_ratio=None,
                                 delimit_by_numbers=True,
-                                max_followers=4590,
+                                max_followers=8000,
                                 max_following=5555,
                                 min_followers=30,
                                 min_following=77)
@@ -92,6 +104,8 @@ def doActionBlueprint(filename, actionfn, args):
         filedata = filedata[:random.randrange(1,5)]
         for data_entry in filedata:
             actionfn([data_entry], **args)
+def followByLocations():
+    doActionBlueprint('Locations2.csv', session.follow_by_locations,{'amount':random.randrange(1,10), 'skip_top_posts': True})
 
 def likeByLocations():
     doActionBlueprint('Locations2.csv', session.like_by_locations,{'amount':random.randrange(1,10), 'skip_top_posts': True})
@@ -132,7 +146,7 @@ try:
     print(login)
     while(True):
         print("Comecou")
-        if(int(time.strftime("%H")) >= random.randrange(1,2) and int(time.strftime("%H")) < random.randrange(23,25)):
+        if(int(time.strftime("%H")) >= random.randrange(6, 9) and int(time.strftime("%H")) < random.randrange(22,25)):
             if(not login):
                 print("Comecou")
                 session.login()
@@ -140,10 +154,12 @@ try:
                 print(login)
                 print(my_following)
                 # settings
-
+            if(readMyFile('flags.csv')[len(readMyFile('flags.csv')) - 1] == '0'):
+                session.follow_by_list(followlist=readMyFile('Users2.csv'), times=1, sleep_delay=600, interact=False)
+                appendCsv('1', 'flags.csv')
+                print('flagappemded')
             if(my_following >= random.randrange(1000, 1200)):
                 ctt = random.randrange(1, 3)
-
                 while(my_following >= random.randrange(800, 1000)):
                     session.set_dont_unfollow_active_users(enabled=True, posts=5)				
                     ct = 0
@@ -162,7 +178,7 @@ try:
                         if(ct >= random.randrange(1, 4)):
                             session.unfollow_users(amount=random.randrange(10, 20), nonFollowers=True, style="RANDOM", unfollow_after=42*60*60,sleep_delay=random.randrange(100, 250))																				
 
-            abc = random.randrange(1, 5)
+            abc = random.randrange(1, 6)
             if abc == 1:
                 print("Welcome to func n 1")
                 print("do job")
@@ -174,7 +190,6 @@ try:
                 if(ct == 2):
                     print("wildcard2")
                     likeByTimeline()
-                time.sleep(1)
                 print(abc)
             elif abc == 2:
                 print("Welcome to func n 2")
@@ -188,7 +203,6 @@ try:
                 if(ct == 2):
                     print("wildcard2.2")
                     time.sleep(random.randrange(500, 2000))
-                time.sleep(1)
                 print(abc)
             elif abc == 3:
                 print("Welcome to func n 3")
@@ -201,13 +215,16 @@ try:
                 if(ct == 2):
                     print("wildcard3.2")
                     likeByTimeline()
-                time.sleep(1)
                 print(abc)
             elif abc == 4:
                 print("Welcome to func n 4")
                 print("do job")
                 likeByTimeline()
-                time.sleep(1)
+                print(abc)
+            elif abc == 5:
+                print("Welcome to func n 4")
+                print("do job")
+                followByLocations()
                 print(abc)
             else:
                 continue

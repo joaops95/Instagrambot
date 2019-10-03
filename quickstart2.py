@@ -52,8 +52,8 @@ def appendCsv(data, csvfile):
                 userlist.write('\n%s' % data)
             userlist.close()
 # -------------------------------login credentials------------------------------------
-insta_username = 'smartechpost'
-insta_password = 'joaotiago'
+insta_username = 'username'
+insta_password = 'password'
 
 # ----------------------------------InstaPy session------------------------------------
 session = InstaPy(username=insta_username,
